@@ -24,7 +24,7 @@ export const ENTRANCE_TEXTURES = [
     // Characters/Objects
     '/textures/entrance/cat_front_body.webp',
     '/textures/entrance/window_sketch.webp',
-    '/textures/entrance/avatar_window.webp',
+    '/textures/entrance/avatar_window.png',
     '/textures/entrance/tree_sketch.webp',
     '/textures/entrance/mouse_hanging.webp',
     '/textures/entrance/pot_with_duck.webp',
