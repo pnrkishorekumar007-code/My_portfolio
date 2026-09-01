@@ -177,16 +177,6 @@ body.no-scroll {
   display: inline-block;
 }
 
-/* Custom Interactive Cursor Rules */
-@media (hover: hover) and (pointer: fine) {
-  body {
-    cursor: none;
-  }
-  a, button, [role="button"] {
-    cursor: none;
-  }
-}
-
 /* Reduced Motion Settings */
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -209,10 +199,6 @@ body.no-scroll {
   }
 
   .webgl-container {
-    display: none !important;
-  }
-
-  .custom-cursor {
     display: none !important;
   }
 }
