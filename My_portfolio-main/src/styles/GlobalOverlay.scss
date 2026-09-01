@@ -1,0 +1,308 @@
+﻿// GlobalOverlay Styles - Torn Paper Aesthetic
+
+@use 'mixins' as *;
+
+.studio-paper-card {
+    position: relative;
+    background: #ffffff;
+
+    // Paper texture background
+    &::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: url('/textures/paper-texture.webp') center center;
+        background-size: cover;
+        transform: rotate(90deg);
+        z-index: -1;
+        pointer-events: none;
+    }
+
+    // Torn paper edges using clip-path
+    @include torn-paper-detailed;
+
+    // Filter shadow doesn't work well directly on clipped elements in all browsers,
+    // so we apply a drop-shadow on its wrapper in inline styles.
+}
+
+.studio-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    opacity: 0.7;
+    flex-shrink: 0;
+    margin-left: 1rem;
+
+    svg {
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: #1a1a1a;
+        stroke-width: 2.5;
+        stroke-linecap: round;
+    }
+
+    &:hover {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+
+    &:active {
+        transform: scale(0.95);
+    }
+}
+
+.studio-media-container {
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    border: 2px solid #1a1a1a;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #000;
+    position: relative;
+    padding-top: 56.25%; // 16:9 Aspect Ratio
+
+    iframe,
+    video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    .thumbnail-placeholder {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #e0e0e0;
+        color: #666;
+        font-family: 'Rubik Scribble', cursive;
+        font-weight: 700;
+        font-size: 1.5rem;
+    }
+}
+
+.studio-action-button {
+    display: block;
+    width: 100%;
+    padding: 0.8rem;
+    background: transparent;
+    border: 2px solid #1a1a1a;
+    color: #1a1a1a;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 1.2rem;
+    font-family: 'Cabin Sketch', cursive;
+    transition: all 0.2s;
+    cursor: pointer;
+    margin-top: auto;
+
+    // Slight sketch styling
+    border-radius: 2px 255px 3px 255px / 255px 5px 225px 3px;
+
+    &:hover {
+        background: #1a1a1a;
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 4px 4px 0 rgba(26, 26, 26, 0.2);
+    }
+
+    &:active {
+        transform: translateY(1px);
+        box-shadow: 2px 2px 0 rgba(26, 26, 26, 0.2);
+    }
+}
+
+// Certificate grid card
+.award-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    background: #f9f9f9;
+    padding: 1rem;
+    border: 2px solid #1a1a1a;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    cursor: pointer;
+    border-radius: 2px 255px 3px 255px / 255px 5px 225px 3px;
+
+    &:hover {
+        transform: translateY(-5px);
+    }
+
+    &__image-wrap {
+        position: relative;
+        width: 100%;
+        padding-bottom: 141%;
+        background: #eee;
+        border: 2px solid #1a1a1a;
+        overflow: hidden;
+        border-radius: 2px 255px 3px 255px / 255px 5px 225px 3px;
+
+        img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+        }
+    }
+
+    &__meta {
+        text-align: center;
+
+        h4 {
+            margin: 0 0 0.4rem 0;
+            font-size: 1.2rem;
+            font-weight: 700;
+            font-family: 'Rubik Scribble', cursive;
+        }
+
+        span {
+            font-size: 1.1rem;
+            color: #4a4a4a;
+            font-family: 'Cabin Sketch', cursive;
+            font-weight: 700;
+        }
+    }
+}
+
+// Certificate grid layout container
+.awards-grid {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+
+    &__scroll {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        align-content: start;
+        height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+        gap: 2rem;
+        padding: 1rem 2rem 2rem 1rem;
+    }
+
+    @include mobile {
+        &__scroll {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            padding: 1rem 0.5rem 2rem 0.5rem;
+        }
+    }
+}
+
+// Hide native scrollbar — custom torn-paper scrollbar replaces it
+.awards-scroll-container {
+    scrollbar-width: none; // Firefox
+    -ms-overflow-style: none; // IE/Edge
+
+    &::-webkit-scrollbar {
+        display: none; // Chrome/Safari
+    }
+}
+
+// Custom torn-paper scroll track
+.torn-scroll-track {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 30px;
+    height: 100%;
+    pointer-events: none;
+    z-index: 15;
+    overflow: visible;
+}
+
+// Sketchy wavy scroll track line
+.torn-scroll-line {
+    position: absolute;
+    right: 8px;
+    top: 5%;
+    height: 90%;
+    width: 2px;
+    // Hand-drawn dashed line
+    background: repeating-linear-gradient(to bottom,
+            rgba(26, 26, 26, 0.2) 0px,
+            rgba(26, 26, 26, 0.2) 4px,
+            transparent 4px,
+            transparent 8px);
+}
+
+// Pencil-mark scroll thumb
+.torn-scroll-thumb {
+    position: absolute;
+    right: 2px;
+    width: 16px;
+    height: 32px;
+    pointer-events: auto;
+    cursor: grab;
+    transition: transform 0.08s ease-out;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 14px;
+        height: 28px;
+        background: rgba(26, 26, 26, 0.15);
+        border: 1.5px solid rgba(26, 26, 26, 0.4);
+        // Sketchy irregular border-radius
+        border-radius: 3px 255px 4px 255px / 255px 4px 225px 3px;
+        transition: background 0.2s ease, border-color 0.2s ease;
+    }
+
+    // Little horizontal pencil strokes inside thumb
+    &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 6px;
+        height: 12px;
+        background: repeating-linear-gradient(to bottom,
+                rgba(26, 26, 26, 0.35) 0px,
+                rgba(26, 26, 26, 0.35) 1px,
+                transparent 1px,
+                transparent 3px);
+    }
+
+    &:hover::before {
+        background: rgba(26, 26, 26, 0.25);
+        border-color: rgba(26, 26, 26, 0.55);
+    }
+
+    &:active {
+        cursor: grabbing;
+
+        &::before {
+            background: rgba(26, 26, 26, 0.35);
+            border-color: rgba(26, 26, 26, 0.65);
+        }
+    }
+}

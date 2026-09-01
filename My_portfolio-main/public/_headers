@@ -1,0 +1,30 @@
+https://kishorekumar.dev/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# Cache static assets for 1 year (Performance & SEO Server Score)
+https://kishorekumar.dev/*.js
+  Cache-Control: public, max-age=31536000, immutable
+
+https://kishorekumar.dev/*.css
+  Cache-Control: public, max-age=31536000, immutable
+
+https://kishorekumar.dev/*.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+https://kishorekumar.dev/*.png
+  Cache-Control: public, max-age=31536000, immutable
+
+https://kishorekumar.dev/*.ktx2
+  Cache-Control: public, max-age=31536000, immutable
+
+https://kishorekumar.dev/*.glb
+  Cache-Control: public, max-age=31536000, immutable
+
+https://kishorekumar.dev/*.mp3
+  Cache-Control: public, max-age=31536000, immutable
+
+https://kishorekumar.dev/fonts/*
+  Cache-Control: public, max-age=31536000, immutable

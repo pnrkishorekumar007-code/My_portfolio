@@ -1,0 +1,45 @@
+// =============================================================================
+// DESIGN TOKENS - Kishorekumar R Portfolio
+// =============================================================================
+
+// Colors
+$color-white: #FFFFFF;
+$color-black: #0A0A0A;
+$color-gray: #1A1A1A;
+$color-gray-dark: #444444;
+$color-gray-light: #666666;
+$color-gray-medium: #999999;
+$color-gray-border: #cccccc;
+$color-cream: #fdf8e2;
+$color-paper: #fcf3c6;
+$color-purple: #311059;
+$color-neon-green: #39FF14;
+
+// Typography
+$font-title: 'Rubik Scribble', cursive;
+$font-handwritten: 'Cabin Sketch', cursive;
+$font-accent: 'Fredericka the Great', cursive;
+$font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+// Breakpoints
+$breakpoint-mobile: 480px;
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;
+$breakpoint-wide: 1440px;
+
+// Z-index layers
+$z-preloader: 100;
+$z-canvas: 1;
+$z-ui: 50;
+
+// Transitions
+$transition-fast: 0.2s ease;
+$transition-normal: 0.4s ease;
+$transition-slow: 0.8s ease;
+
+// Spacing
+$spacing-xs: 0.5rem;
+$spacing-sm: 1rem;
+$spacing-md: 2rem;
+$spacing-lg: 4rem;
+$spacing-xl: 8rem;
