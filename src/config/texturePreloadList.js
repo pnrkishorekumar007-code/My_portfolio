@@ -25,7 +25,7 @@ export const ENTRANCE_TEXTURES = [
     '/textures/entrance/cat_front_body.webp',
     '/textures/entrance/window_sketch.webp',
     '/textures/entrance/avatar_window.png',
-    '/textures/entrance/tree_sketch.webp',
+    '/textures/entrance/tree_sketch.png',
     '/textures/entrance/mouse_hanging.webp',
     '/textures/entrance/pot_with_duck.webp',
     '/textures/entrance/bug_sketch.webp',
@@ -105,15 +105,7 @@ export const IMAGE_ASSETS = [
 
 // Additional textures from App.jsx and avatar animations
 export const UI_TEXTURES = [
-    '/textures/corridor/avatar_anim/1.webp',
-    '/textures/corridor/avatar_anim/2.webp',
-    '/textures/corridor/avatar_anim/3.webp',
-    '/textures/corridor/avatar_anim/4.webp',
-    '/textures/corridor/avatar_anim/5.webp',
-    '/textures/corridor/avatar_anim/6.webp',
-    '/textures/corridor/avatar_anim/7.webp',
-    '/textures/corridor/avatar_anim/8.webp',
-    '/textures/corridor/avatar_anim/9.webp',
+    '/textures/corridor/avatar_anim/1.png',
 ];
 
 // ============================================

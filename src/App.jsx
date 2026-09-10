@@ -1,4 +1,4 @@
-import { useState, Suspense, useEffect, useCallback, lazy } from 'react';
+import { useState, Suspense, useEffect, useCallback, lazy, Component } from 'react';
 import { Canvas, useLoader } from '@react-three/fiber';
 import { Preload, useTexture } from '@react-three/drei';
 
@@ -19,6 +19,53 @@ import { useDocumentMeta } from './hooks/useDocumentMeta';
 
 // Lazy load the heavy 3D experience
 const Experience = lazy(() => import('./components/canvas/Experience'));
+
+// Error boundary to prevent any 3D/texture failure from blanking the whole app
+class SceneErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('[SceneErrorBoundary] 3D scene crashed:', error);
+    console.error('[SceneErrorBoundary] Component stack:', errorInfo?.componentStack);
+    // Signal sceneReady so the preloader can dismiss
+    if (this.props.onSceneReady) {
+      this.props.onSceneReady();
+    }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="scene-error-fallback">
+          <div className="scene-error-fallback__card">
+            <h1>Something went wrong…</h1>
+            <p>
+              The 3D scene failed to load. One of the textures may be missing or
+              corrupted. Try refreshing the page, or check your connection.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                this.setState({ hasError: false });
+                window.location.reload();
+              }}
+            >
+              Reload
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 import './styles/main.scss';
 
@@ -130,6 +177,17 @@ function AppContent() {
     });
   }, []);
 
+  // Safety timeout: force sceneReady after 15s even if 3D scene fails
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (!sceneReady) {
+        console.warn('[App] Safety timeout: forcing sceneReady=true');
+        setSceneReady(true);
+      }
+    }, 15000);
+    return () => clearTimeout(timeout);
+  }, [sceneReady]);
+
   return (
     <AudioProvider>
       <SceneProvider>
@@ -138,6 +196,7 @@ function AppContent() {
         <div className="app">
           {/* Full screen 3D Canvas */}
           <div className="canvas-wrapper">
+            <SceneErrorBoundary onSceneReady={handleSceneReady}>
             <Canvas
               camera={{
                 position: [0, 0.2, 28],
@@ -167,6 +226,7 @@ function AppContent() {
                 <Preload all />
               </Suspense>
             </Canvas>
+            </SceneErrorBoundary>
           </div>
 
           {/* Navigation UI - Hamburger, Map, Back, Audio */}

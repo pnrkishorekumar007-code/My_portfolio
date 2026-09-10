@@ -24,8 +24,8 @@ const Avatar = ({ position = [10, -20, 30] }) => {
     const worldPosVec = useRef(new THREE.Vector3());
 
     // --- FRAME-BY-FRAME ANIMATION (PING-PONG) ---
-    const TOTAL_FRAMES = 9;
-    const framePaths = Array.from({ length: TOTAL_FRAMES }, (_, i) => `/textures/corridor/avatar_anim/${i + 1}.webp`);
+    const TOTAL_FRAMES = 1;
+    const framePaths = Array.from({ length: TOTAL_FRAMES }, (_, i) => `/textures/corridor/avatar_anim/${i + 1}.png`);
 
     // Load all texture frames
     const textures = useTexture(framePaths);
