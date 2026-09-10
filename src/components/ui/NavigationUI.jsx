@@ -51,12 +51,11 @@ const NavigationUI = () => {
         return () => window.removeEventListener('inspectChange', handleInspectChange);
     }, []);
 
-    const paintedMapsRefs = {
-        about: useRef(),
-        gallery: useRef(),
-        contact: useRef(),
-        studio: useRef()
-    };
+    const aboutMapRef = useRef();
+    const galleryMapRef = useRef();
+    const contactMapRef = useRef();
+    const studioMapRef = useRef();
+    const paintedMapsRefs = { about: aboutMapRef, gallery: galleryMapRef, contact: contactMapRef, studio: studioMapRef };
 
     useEffect(() => {
         // About (zone: left 10%, top 20%, width 30%, height 35%)
@@ -252,7 +251,7 @@ const NavigationUI = () => {
                     onClick={handleBackClick}
                     aria-label="Back to corridor"
                 >
-                    <svg viewBox="0 0 24 24" className="icon-back">
+                    <svg viewBox="0 0 24 24" className="icon-back" aria-hidden="true">
                         <path d="M19 12H5M12 19l-7-7 7-7" />
                     </svg>
                 </button>
@@ -282,13 +281,13 @@ const NavigationUI = () => {
                         aria-expanded={isAudioMenuOpen}
                     >
                         {isMuted ? (
-                            <svg viewBox="0 0 24 24" className="icon-audio">
+                            <svg viewBox="0 0 24 24" className="icon-audio" aria-hidden="true">
                                 <path d="M11 5L6 9H2v6h4l5 4V5z" />
                                 <line x1="23" y1="9" x2="17" y2="15" />
                                 <line x1="17" y1="9" x2="23" y2="15" />
                             </svg>
                         ) : (
-                            <svg viewBox="0 0 24 24" className="icon-audio">
+                            <svg viewBox="0 0 24 24" className="icon-audio" aria-hidden="true">
                                 <path d="M11 5L6 9H2v6h4l5 4V5z" />
                                 <path d="M15 9a5 5 0 0 1 0 6" />
                                 <path d="M18 5a9 9 0 0 1 0 14" />
@@ -302,7 +301,7 @@ const NavigationUI = () => {
                         aria-label="Achievements"
                         aria-expanded={isAchievementsOpen}
                     >
-                        <svg viewBox="0 0 24 24" className="icon-trophy">
+                        <svg viewBox="0 0 24 24" className="icon-trophy" aria-hidden="true">
                             <path d="M8 21h8M12 17v4M7 4h10M5 4h14v5a7 7 0 0 1-7 7 7 7 0 0 1-7-7z" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                             <path d="M5 9H3V6h2" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                             <path d="M19 9h2V6h-2" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -319,6 +318,7 @@ const NavigationUI = () => {
                         className="map-border-overlay"
                         viewBox="0 0 100 100"
                         preserveAspectRatio="none"
+                        aria-hidden="true"
                         style={{
                             position: 'absolute',
                             top: 0,
@@ -349,7 +349,7 @@ const NavigationUI = () => {
                                 onClick={() => setIsMenuOpen(false)}
                                 aria-label="Close map"
                             >
-                                <svg viewBox="0 0 24 24">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
                                     <path d="M18 6L6 18M6 6l12 12" />
                                 </svg>
                             </button>
@@ -422,6 +422,7 @@ const NavigationUI = () => {
                                     onMouseEnter={() => setHoveredRoom(room.id)}
                                     onMouseLeave={() => setHoveredRoom(null)}
                                     title={room.label}
+                                    aria-label={`Teleport to ${room.label}`}
                                 >
                                     <img src="/images/pin-slot.webp" alt="" className="slot-image" />
                                 </button>
@@ -463,7 +464,7 @@ const NavigationUI = () => {
                                 onClick={() => setIsAudioMenuOpen(false)}
                                 aria-label="Close audio settings"
                             >
-                                <svg viewBox="0 0 24 24">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
                                     <path d="M18 6L6 18M6 6l12 12" />
                                 </svg>
                             </button>

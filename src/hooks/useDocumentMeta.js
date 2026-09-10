@@ -48,9 +48,10 @@ export function getInitialRoomFromUrl() {
 }
 
 export function useDocumentMeta() {
-    const { currentRoom, teleportTo } = useScene();
+    const { currentRoom, hasEntered, teleportTo, requestExit } = useScene();
     const isHandlingPopState = useRef(false);
     const lastPushedRoom = useRef(undefined); // Track what we last pushed to avoid duplicates
+    const initialLoadHandled = useRef(false);
 
     // Update document meta and URL when room changes
     useEffect(() => {
@@ -97,15 +98,30 @@ export function useDocumentMeta() {
     // Handle browser back/forward buttons
     useEffect(() => {
         const handlePopState = (e) => {
+            // Ignore the very first popstate event (browsers fire it with null state on load)
+            if (!initialLoadHandled.current) {
+                initialLoadHandled.current = true;
+                if (e.state === null) return;
+            }
+
             const room = e.state ? e.state.room : null;
-            if (room !== undefined) {
-                isHandlingPopState.current = true;
-                lastPushedRoom.current = room;
+
+            // If room is undefined (corrupted state), do nothing
+            if (room === undefined) return;
+
+            isHandlingPopState.current = true;
+            lastPushedRoom.current = room;
+
+            // If navigating back to corridor (room === null) from inside a room,
+            // use requestExit() to trigger the proper exit animation instead of teleportTo(null)
+            if (room === null && hasEntered) {
+                requestExit();
+            } else {
                 teleportTo(room);
             }
         };
 
         window.addEventListener('popstate', handlePopState);
         return () => window.removeEventListener('popstate', handlePopState);
-    }, [teleportTo]);
+    }, [teleportTo, requestExit, hasEntered]);
 }

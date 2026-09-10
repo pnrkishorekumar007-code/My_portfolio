@@ -1,4 +1,3 @@
-import React from 'react';
 import { useAchievements } from '../../context/useAchievements';
 import { ACHIEVEMENTS } from '../../context/achievements';
 import { useAudio } from '../../context/useAudio';
@@ -17,7 +16,7 @@ const AchievementPopup = () => {
     const isCompleted = activePopup.status === 'completed';
     const isHiding = activePopup.status === 'hiding';
 
-    // Specjalna logika dla corridor_enter (pytanie o dźwięk)
+    // Special logic for corridor_enter (sound question)
     const isSoundPrompt = activePopup.id === 'corridor_enter';
 
     return (
@@ -30,6 +29,7 @@ const AchievementPopup = () => {
                 className="popup-border"
                 viewBox="0 0 100 100"
                 preserveAspectRatio="none"
+                aria-hidden="true"
             >
                 <path
                     d="M 0 0 L 100 0 L 100 0 L 98 10 L 100 20 L 97 35 L 100 50 L 98 65 L 100 80 L 97 90 L 100 100 L 90 97 L 80 100 L 70 96 L 60 100 L 50 97 L 40 100 L 30 96 L 20 100 L 10 97 L 0 100 L 0 100 L 2 90 L 0 80 L 3 65 L 0 50 L 2 35 L 0 20 L 3 10 L 0 0 Z"
@@ -45,7 +45,7 @@ const AchievementPopup = () => {
                 {!isSoundPrompt && (
                     <div className={`checkbox ${isCompleted ? 'checked' : ''}`}>
                         {isCompleted && (
-                            <svg viewBox="0 0 24 24" className="checkmark">
+                            <svg viewBox="0 0 24 24" className="checkmark" aria-hidden="true">
                                 <path d="M5 13l4 4L19 7" fill="none" stroke="#1a1a1a" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
                         )}
@@ -61,17 +61,17 @@ const AchievementPopup = () => {
                             Click a door to enter. Audio is currently
                             <button
                                 className={`inline-sound-toggle ${!isMuted ? 'on' : 'off'}`}
+                                aria-label={`${isMuted ? 'Turn sound on' : 'Turn sound off'}`}
                                 onClick={(e) => {
                                     e.stopPropagation();
 
                                     const willMute = !isMuted;
 
-                                    // 1. Oprogramowujemy flagi MUTE (dla silnika i utilsa)
+                                    // Update mute flags (both engine and utils)
                                     if (isMuted !== willMute) toggleMute();
                                     if (getBgmMuted() !== willMute) toggleBgmMute();
 
-                                    // 2. Wymuszamy fizyczne zjechanie pasków głośności, 
-                                    // żeby menu się zsynchronizowało z ustawieniami z wejścia
+                                    // Force the volume sliders to sync with entrance settings
                                     if (willMute) {
                                         setGlobalVolume(0);
                                         setMusicVolume(0);

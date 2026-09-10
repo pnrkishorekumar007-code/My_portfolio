@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useScene } from '../../context/useScene';
 import gsap from 'gsap';
 import { TextPlugin } from 'gsap/TextPlugin';
@@ -6,9 +6,22 @@ import '../../styles/GlobalOverlay.scss';
 
 gsap.registerPlugin(TextPlugin);
 
+// DUMMY RENDER MOCK - Pre-render the heaviest layout (certificate_grid) invisibly 
+// to calculate CSS layout costs on page load, NOT on first click.
+const DUMMY_GRID_CONTENT = {
+    title: 'Loading...',
+    layout: 'certificate_grid',
+    items: [
+        { label: '', date: '', image: '' },
+        { label: '', date: '', image: '' },
+        { label: '', date: '', image: '' },
+        { label: '', date: '', image: '' }
+    ],
+    platformConfig: { label: '...' }
+};
+
 const GlobalOverlay = () => {
     const { overlayContent, closeOverlay } = useScene();
-    const [, setIsVisible] = useState(false);
     const [animateOpen, setAnimateOpen] = useState(false);
 
     // Check if mobile based on window width
@@ -22,7 +35,6 @@ const GlobalOverlay = () => {
 
     useEffect(() => {
         if (overlayContent) {
-            setIsVisible(true);
             // Delay animation to allow DOM mount and initial 'closed' layout paint
             const delayAnim = setTimeout(() => {
                 setAnimateOpen(true);
@@ -30,9 +42,6 @@ const GlobalOverlay = () => {
             return () => clearTimeout(delayAnim);
         } else {
             setAnimateOpen(false);
-            // Wait for exit animation (should match transition duration ~0.6-1s)
-            const timer = setTimeout(() => setIsVisible(false), 800);
-            return () => clearTimeout(timer);
         }
     }, [overlayContent]);
 
@@ -44,25 +53,11 @@ const GlobalOverlay = () => {
         }
     }, [overlayContent]);
 
-    // Wyłączamy "return null", żeby ciężkie filtry rozmycia i SVG były osadzone w DOM 
-    // i nie powodowały zacięć podczas pierwszego wywołania.
+    // Keep the overlay mounted so the heavy blur filters and SVG overlays stay in the DOM,
+    // avoiding page jank on first invocation.
     // if (!isVisible && !overlayContent && !cachedContent) return null;
 
-    // DUMMY RENDER MOCK - Pre-render the heaviest layout (certificate_grid) invisibly 
-    // to calculate CSS layout costs on page load, NOT on first click.
-    const dummyGridContent = {
-        title: 'Loading...',
-        layout: 'certificate_grid',
-        items: [
-            { label: '', date: '', image: '' },
-            { label: '', date: '', image: '' },
-            { label: '', date: '', image: '' },
-            { label: '', date: '', image: '' }
-        ],
-        platformConfig: { label: '...' }
-    };
-
-    const content = overlayContent || cachedContent || dummyGridContent;
+    const content = overlayContent || cachedContent || DUMMY_GRID_CONTENT;
 
     // Propagate animateOpen state to control CSS transitions
     return <ContentCard content={content} isOpen={animateOpen} onClose={closeOverlay} isMobile={isMobile} />;
@@ -208,8 +203,8 @@ const ContentCard = ({ content, isOpen, onClose, isMobile }) => {
     const transitionSpring = 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s ease';
     const transitionContent = 'all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)';
 
-    // --- KONFIGURACJA STYLU KARTKI (POZYCJA) ---
-    // Używamy % lub vw/vh dla fluid-responsywności.
+    // --- CARD STYLE CONFIGURATION (POSITION) ---
+    // Using % or vw/vh for fluid responsive design.
     const cardStyle = isMobile ? {
         // MOBILE: Karta na dole
         width: '90%',
@@ -237,17 +232,16 @@ const ContentCard = ({ content, isOpen, onClose, isMobile }) => {
         transitionDelay: isOpen ? `${delay}ms` : '0ms',
     });
 
-    // --- KONFIGURACJA MASKI (SPOTLIGHT - CZARNA DZIURA) ---
+    // --- MASK CONFIG (SPOTLIGHT / BLACK HOLE) ---
     const maskStyle = (content.layout === 'certificate_grid') ? {
         maskImage: 'none',
         WebkitMaskImage: 'none'
     } : isMobile ? {
-        // Mobile: Monitor jest na górze (50% szerokości, 25% wysokości od góry)
+        // Mobile: Monitor is at top (50% width, 25% height from top)
         maskImage: 'radial-gradient(circle at 50% 25%, transparent 0%, transparent 15%, black 40%)',
         WebkitMaskImage: 'radial-gradient(circle at 50% 25%, transparent 0%, transparent 15%, black 40%)'
     } : {
-        // Desktop: Monitor jest po lewej (31% szerokości od lewej, 50% wysokości)
-        // WPROWADZONE PRZEZ UZYTKOWNIKA 31%
+        // Desktop: Monitor is on the left (31% width from left, 50% height)
         maskImage: 'radial-gradient(circle at 31% 50%, transparent 0%, transparent 12%, black 35%)',
         WebkitMaskImage: 'radial-gradient(circle at 31% 50%, transparent 0%, transparent 12%, black 35%)'
     };
@@ -277,8 +271,8 @@ const ContentCard = ({ content, isOpen, onClose, isMobile }) => {
                     left: 0,
                     width: '100%',
                     height: '100%',
-                    // Optymalizacja WebGL: Filtry są baaaardzo drogie podczas animacji
-                    // Trzymamy je na sztywno, a animujemy tylko przezroczystość (opacity)
+                    // Perf note: backdrop blur + masked SVG layers are very expensive
+                    // during animation. Keep them static and animate only opacity.
                     backgroundColor: 'rgba(0,0,0,0.5)',
                     backdropFilter: 'blur(8px)',
                     WebkitBackdropFilter: 'blur(8px)',
@@ -333,6 +327,7 @@ const ContentCard = ({ content, isOpen, onClose, isMobile }) => {
                         className="studio-border-overlay"
                         viewBox="0 0 100 100"
                         preserveAspectRatio="none"
+                        aria-hidden="true"
                         style={{
                             position: 'absolute',
                             top: 0,
@@ -417,7 +412,15 @@ const ContentCard = ({ content, isOpen, onClose, isMobile }) => {
                             >
                                 {content.items?.map((item, index) => (
                                     <div key={index} className="award-card"
+                                        role="button"
+                                        tabIndex={0}
                                         onClick={() => window.open(item.url || content.url || '#', '_blank')}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' || e.key === ' ') {
+                                                e.preventDefault();
+                                                window.open(item.url || content.url || '#', '_blank');
+                                            }
+                                        }}
                                     >
                                         <div className="award-card__image-wrap">
                                             <img
@@ -496,6 +499,7 @@ const ContentCard = ({ content, isOpen, onClose, isMobile }) => {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="studio-action-button"
+                                    aria-label={`Open Link (opens in new tab)`}
                                 >
                                     Open Link ↗
                                 </a>

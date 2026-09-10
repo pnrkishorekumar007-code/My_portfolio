@@ -163,6 +163,7 @@ const ScreenReaderOverlay = () => {
             {/* Live region for state changes */}
             <div aria-live="polite" aria-atomic="true" className="sr-only">
                 {isInRoom && `Entered ${currentRoom} room`}
+                {!isInRoom && hasEntered && `Returned to corridor`}
             </div>
         </div>
     );

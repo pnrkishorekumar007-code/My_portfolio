@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useMemo, useCallback } from "react";
 
 // Performance Tiers
 const TIERS = {
@@ -81,20 +81,20 @@ export const PerformanceProvider = ({ children }) => {
   }, []);
 
   // Function to manually downgrade tier (called by PerformanceMonitor)
-  const downgradeTier = () => {
+  const downgradeTier = useCallback(() => {
     setTier((current) => {
       if (current === TIERS.HIGH) return TIERS.MEDIUM;
       if (current === TIERS.MEDIUM) return TIERS.LOW;
       return TIERS.LOW;
     });
-  };
+  }, []);
 
-  const value = {
+  const value = useMemo(() => ({
     tier,
     settings: SETTINGS[tier],
     isDetecting,
     downgradeTier,
-  };
+  }), [tier, isDetecting, downgradeTier]);
 
   return (
     <PerformanceContext.Provider value={value}>

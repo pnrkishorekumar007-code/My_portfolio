@@ -66,14 +66,11 @@ export const AudioProvider = ({ children }) => {
 
     // Call this on first interaction
     const enableAudio = useCallback(() => {
-        if (!audioEnabled) {
-            // Create a dummy context or just flip the switch to say "we tried"
-            // Real web audio unlock usually needs a context resume, 
-            // but for HTML5 Audio elements, just a user interaction event is enough 
-            // to "bless" the document for subsequent plays.
-            setAudioEnabled(true);
-        }
-    }, [audioEnabled]);
+        setAudioEnabled((prev) => {
+            if (prev) return prev;
+            return true;
+        });
+    }, []);
 
     const play = useCallback((soundName, { loop = false, volume = 1.0 } = {}) => {
         // Graceful degradation if files missing
@@ -101,7 +98,10 @@ export const AudioProvider = ({ children }) => {
 
         // Store reference (clearing old one if exists with same name for simplicity)
         if (activeSounds.current[soundName]) {
-            activeSounds.current[soundName].pause();
+            const old = activeSounds.current[soundName];
+            old.pause();
+            old.src = '';
+            old.load();
         }
         activeSounds.current[soundName] = audio;
 

@@ -155,6 +155,9 @@ const Preloader = ({ onComplete, ready }) => {
   const { play } = useAudio();
   // Track audio handle to stop loop
   const pencilSoundRef = useRef(null);
+  // Keep latest play reference to avoid stale closures in GSAP callbacks
+  const playRef = useRef(play);
+  useEffect(() => { playRef.current = play; }, [play]);
 
   // Use refs for animation targets
   const containerRef = useRef(null);
@@ -236,7 +239,7 @@ const Preloader = ({ onComplete, ready }) => {
   const checkProgressTriggers = (val) => {
     // Pencil Sound
     if (val < 99 && !pencilSoundRef.current) {
-      pencilSoundRef.current = play('pencil', { loop: true, volume: 0.5 });
+      pencilSoundRef.current = playRef.current('pencil', { loop: true, volume: 0.5 });
     }
     else if (val >= 99 && pencilSoundRef.current) {
       pencilSoundRef.current.stop();
@@ -332,7 +335,7 @@ const Preloader = ({ onComplete, ready }) => {
       pencilSoundRef.current.stop();
       pencilSoundRef.current = null;
     }
-    play('tear', { volume: 0.8 });
+    playRef.current('tear', { volume: 0.8 });
 
     const tl = gsap.timeline({
       onComplete: () => {

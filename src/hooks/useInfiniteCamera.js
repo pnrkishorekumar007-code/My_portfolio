@@ -1,6 +1,6 @@
 import { useRef, useEffect, useCallback, useLayoutEffect } from 'react';
 import gsap from 'gsap';
-import { Observer } from 'gsap/all';
+import { Observer } from 'gsap/Observer';
 
 gsap.registerPlugin(Observer);
 import { useThree, useFrame } from '@react-three/fiber';
