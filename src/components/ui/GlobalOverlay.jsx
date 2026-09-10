@@ -249,6 +249,7 @@ const ContentCard = ({ content, isOpen, onClose, isMobile }) => {
     return (
         <div
             className="global-overlay-wrapper"
+            inert={isOpen ? undefined : true}
             style={{
                 position: 'fixed',
                 top: 0,

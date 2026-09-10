@@ -227,6 +227,13 @@ body.no-scroll {
   display: inline-block;
 }
 
+/* Keyboard Focus Accessibility — consistent visible ring across the app
+   (torn-paper UI has no native focus affordance on most controls) */
+:where(button, a, [role="button"], input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--focus-ring, #c084fc);
+  outline-offset: 2px;
+}
+
 /* Reduced Motion Settings */
 @media (prefers-reduced-motion: reduce) {
   html {
